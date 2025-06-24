@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | V O U G E V I L L E</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        nav {
+            background-color: #ab2b67;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+        }
+        
+        .page-title {
+            text-align: center;
+            color: #ab2b67;
+            margin: 30px 0;
+            font-size: 2.2em;
+        }
+        
+        .cart-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .cart-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .cart-item {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .item-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .item-details {
+            padding: 15px;
+        }
+        
+        .item-name {
+            font-size: 1.1em;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .item-price {
+            font-weight: bold;
+            color: #ab2b67;
+            font-size: 1.2em;
+        }
+        
+        .cart-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            margin-top: 30px;
+            text-align: right;
+        }
+        
+        .total-price {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #ab2b67;
+            margin-bottom: 25px;
+        }
+        
+        .checkout-btn {
+            background-color: #ab2b67;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        
+        .checkout-btn:hover {
+            background-color: #8a2252;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            margin: 50px 0;
+        }
+        
+        .continue-shopping {
+            color: #ab2b67;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/cart">Cart</a>
+        <a href="/logout">Logout</a>
+    </nav>
+
+    <h1 class="page-title">Your Shopping Cart</h1>
+
+    <div class="cart-container">
+        {% if products %}
+            <div class="cart-items">
+                {% for product in products %}
+                <div class="cart-item">
+                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="item-image">
+                    <div class="item-details">
+                        <h3 class="item-name">{{ product.name }}</h3>
+                        <p class="item-price">₹{{ product.price }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-summary">
+                <p class="total-price">Total: ₹{{ total }}</p>
+                <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
+            </div>
+        {% else %}
+            <div class="empty-cart">
+                <p>Your cart is empty</p>
+                <a href="/dashboard" class="continue-shopping">Continue Shopping</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

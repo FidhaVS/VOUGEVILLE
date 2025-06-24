@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VOUGEVILLE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background: #fff1f5;  /* Lighter pink background */
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #e60023;  /* Pinterest red */
+            font-family:'Josefin Sans', sans-serif;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #ffe4e1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #c01fb0;  /* Pinterest red */
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #b5273c;  /* Pinterest red */
+            color: white;
+        }
+
+        hr {
+            border: 1px solid #b66d78;  /* Pinterest red */
+        }
+    </style>
+</head>
+<body>
+    <h1>V O U G E V I L L E</h1>
+    {% if session.get('user_id') %}
+        <nav>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('cart') }}">Cart</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    {% endif %}
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>

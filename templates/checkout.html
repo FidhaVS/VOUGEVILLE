@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if not confirmation %}Checkout{% else %}Order Confirmed{% endif %} | V O U G E V I L L E</title>
+    <style>
+        :root {
+            --primary: #ab2b67;
+            --primary-light: #f8e1eb;
+            --secondary: #2b2d42;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fafafa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .checkout-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .checkout-title {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .payment-option {
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .payment-option.selected {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+        
+        .payment-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-details {
+            display: none;
+            margin-top: 1rem;
+        }
+        
+        .payment-details.active {
+            display: block;
+        }
+        
+        .confirmation-message {
+            text-align: center;
+            padding: 2rem;
+            background: var(--primary-light);
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+        }
+        
+        .confirmation-icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+        
+        .order-details {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin: 1.5rem 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        {% if not confirmation %}
+            <div class="checkout-header">
+                <h1 class="checkout-title">Complete Your Order</h1>
+            </div>
+            
+            <form method="POST">
+                <!-- Shipping Address Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Shipping Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" id="state" name="state" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="zip_code">ZIP Code</label>
+                            <input type="text" id="zip_code" name="zip_code" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Method Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Payment Method</h3>
+                    
+                    <div class="payment-options">
+                        {% for method in payment_methods %}
+                        <div class="payment-option {% if loop.first %}selected{% endif %}" 
+                             onclick="selectPayment('{{ method }}')">
+                            <input type="radio" name="payment_method" value="{{ method }}" 
+                                   {% if loop.first %}checked{% endif %} hidden>
+                            <div class="payment-icon">
+                                {% if method == 'card' %}💳
+                                {% elif method == 'upi' %}📱
+                                {% elif method == 'netbanking' %}🏦
+                                {% elif method == 'cod' %}💰
+                                {% endif %}
+                            </div>
+                            <p>
+                                {% if method == 'card' %}Credit/Debit Card
+                                {% elif method == 'upi' %}UPI Payment
+                                {% elif method == 'netbanking' %}Net Banking
+                                {% elif method == 'cod' %}Cash on Delivery
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Payment Details Sections -->
+                    <div id="cardDetails" class="payment-details {% if payment_methods[0] == 'card' %}active{% endif %}">
+                        <div class="form-group">
+                            <label>Card Number</label>
+                            <input type="text" placeholder="4242 4242 4242 4242">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Expiry Date</label>
+                                <input type="text" placeholder="MM/YY">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="upiDetails" class="payment-details">
+                        <div class="form-group">
+                            <label>UPI ID</label>
+                            <input type="text" placeholder="yourname@upi">
+                        </div>
+                    </div>
+                    
+                    <div id="netbankingDetails" class="payment-details">
+                        <div class="form-group">
+                            <label>Select Bank</label>
+                            <select>
+                                <option>State Bank of India</option>
+                                <option>HDFC Bank</option>
+                                <option>ICICI Bank</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="form-section">
+                    <h3 class="section-title">Order Summary</h3>
+                    {% for product in products %}
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>{{ product.name }}</span>
+                        <span>₹{{ product.price }}</span>
+                    </div>
+                    {% endfor %}
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
+                        <span>Total</span>
+                        <span>₹{{ total }}</span>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn">Place Order</button>
+                </div>
+            </form>
+            
+            <script>
+                function selectPayment(method) {
+                    // Update selected payment option
+                    document.querySelectorAll('.payment-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    event.currentTarget.classList.add('selected');
+                    
+                    // Show corresponding details
+                    document.querySelectorAll('.payment-details').forEach(detail => {
+                        detail.classList.remove('active');
+                    });
+                    document.getElementById(method + 'Details').classList.add('active');
+                }
+            </script>
+            
+        {% else %}
+            <!-- Confirmation View -->
+            <div class="confirmation-message">
+                <div class="confirmation-icon">✓</div>
+                <h2>Order Confirmed!</h2>
+                <p>Thank you for your purchase</p>
+            </div>
+            
+            <div class="order-details">
+                <h3 class="section-title">Order Details</h3>
+                
+                <h4>Shipping Information</h4>
+                <p>{{ address.full_name }}</p>
+                <p>{{ address.address }}</p>
+                <p>{{ address.city }}, {{ address.state }} {{ address.zip_code }}</p>
+                <p>Phone: {{ address.phone }}</p>
+                
+                <h4 style="margin-top: 1.5rem;">Payment Method</h4>
+                <p>
+                    {% if payment_method == 'card' %}Credit/Debit Card
+                    {% elif payment_method == 'upi' %}UPI Payment
+                    {% elif payment_method == 'netbanking' %}Net Banking
+                    {% elif payment_method == 'cod' %}Cash on Delivery
+                    {% endif %}
+                </p>
+                
+                <h4 style="margin-top: 1.5rem;">Items Ordered</h4>
+                {% for product in products %}
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>{{ product.name }}</span>
+                    <span>₹{{ product.price }}</span>
+                </div>
+                {% endfor %}
+                
+                <div style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
+                    <span>Total</span>
+                    <span>₹{{ total }}</span>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <a href="/dashboard" class="btn">Continue Shopping</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
