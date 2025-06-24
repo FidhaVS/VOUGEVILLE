@@ -43,7 +43,7 @@ http://127.0.0.1:5000
 
 
 # Screenshots 
-![Screenshot (17)](https://github.com/user-attachments/assets/48fdfe30-7825-4d22-8837-546ff13e74e9)
+![Screenshot (11)](https://github.com/user-attachments/assets/ad8a4b62-08d3-444d-867d-af139cd86ec1)
 ![Screenshot (12)](https://github.com/user-attachments/assets/6b699904-3dd8-423d-999c-9847cb427d23)
 ![Screenshot (13)](https://github.com/user-attachments/assets/701f54e3-73d5-4473-98ab-b1c42c5b5574)
 ![Screenshot (14)](https://github.com/user-attachments/assets/f88b13e8-a16f-4143-9aeb-1216b61f25e2)
